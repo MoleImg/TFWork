@@ -15,7 +15,8 @@ class_num = 10
 epoch_num = 500
 
 # data import
-mnist = input_data.read_data_sets('./mnist', one_hot=True)
+mnist_path = '../MNIST_data'
+mnist = input_data.read_data_sets(mnist_path, one_hot=True)
 test_x = mnist.test.images[:2000]
 test_y = mnist.test.labels[:2000]
 
