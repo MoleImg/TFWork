@@ -1,5 +1,6 @@
 '''
 Demo for the preparation for the ECG-RNN exp.
+Using RNN for classification
 '''
 import numpy as np
 import tensorflow as tf
@@ -23,7 +24,10 @@ test_y = raw_data.test.labels[:2000]
 # model
 graph = tf.Graph()
 with graph.as_default():
+    # 由于输入的原始数据形式为二维，因此在这将input_x的placeholder定义为二维
+    # 同样可以将输入的原始数据重排为三维
     input_x = tf.placeholder(tf.float32, shape=[None, TIME_STEP*INPUT_SIZE])
+    # 但RNN的输入通常为三维，即batch_size * time_step * input_size
     input_image = tf.reshape(input_x, [-1, TIME_STEP, INPUT_SIZE])
     input_y = tf.placeholder(tf.int32, shape=[None, CLASS_NUM])
 
