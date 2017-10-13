@@ -17,7 +17,7 @@
     <SUITE FILE_PATH="coverage/TFWork$RNNDemo.coverage" NAME="RNNDemo Coverage Results" MODIFIED="1507738350866" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/TFWork$DropoutDemo.coverage" NAME="DropoutDemo Coverage Results" MODIFIED="1507128100826" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/TFWork$CNNDemo.coverage" NAME="CNNDemo Coverage Results" MODIFIED="1507729779272" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/TFWork$RNNRegressionDemo.coverage" NAME="RNNRegressionDemo Coverage Results" MODIFIED="1507837511172" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/TFWork$RNNRegressionDemo.coverage" NAME="RNNRegressionDemo Coverage Results" MODIFIED="1507842933726" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -70,7 +70,7 @@
       <file leaf-file-name="RNNDemo.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/RNNDemo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="188" max-vertical-offset="1020">
+            <state vertical-scroll-proportion="0.0" vertical-offset="216" max-vertical-offset="1020">
               <caret line="2" column="28" selection-start-line="2" selection-start-column="28" selection-end-line="2" selection-end-column="28" />
               <folding>
                 <element signature="e#83#101#0" expanded="true" />
@@ -82,8 +82,8 @@
       <file leaf-file-name="RNNRegressionDemo.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/RNNRegressionDemo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.9438903" vertical-offset="203" max-vertical-offset="1380">
-              <caret line="64" column="53" selection-start-line="64" selection-start-column="53" selection-end-line="64" selection-end-column="53" />
+            <state vertical-scroll-proportion="0.4114713" vertical-offset="0" max-vertical-offset="1380">
+              <caret line="22" column="14" selection-start-line="22" selection-start-column="14" selection-end-line="22" selection-end-column="14" />
               <folding>
                 <element signature="e#33#51#0" expanded="true" />
               </folding>
@@ -523,7 +523,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="10" />
+      <option name="time" value="11" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -737,7 +737,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/RNNDemo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1020">
+        <state vertical-scroll-proportion="0.0" vertical-offset="216" max-vertical-offset="1020">
           <caret line="2" column="28" selection-start-line="2" selection-start-column="28" selection-end-line="2" selection-end-column="28" />
           <folding>
             <element signature="e#83#101#0" expanded="true" />
@@ -747,8 +747,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/RNNRegressionDemo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.9438903" vertical-offset="203" max-vertical-offset="1380">
-          <caret line="64" column="53" selection-start-line="64" selection-start-column="53" selection-end-line="64" selection-end-column="53" />
+        <state vertical-scroll-proportion="0.4114713" vertical-offset="0" max-vertical-offset="1380">
+          <caret line="22" column="14" selection-start-line="22" selection-start-column="14" selection-end-line="22" selection-end-column="14" />
           <folding>
             <element signature="e#33#51#0" expanded="true" />
           </folding>
