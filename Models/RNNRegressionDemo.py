@@ -26,9 +26,9 @@ CELL_NUM = 32
 LR = 0.01
 
 # data
-steps = np.linspace(0, np.pi*2, 100, dtype=np.float32)
-train_x = np.sin(steps)
-train_y = np.cos(steps)
+train_steps = np.linspace(1000*np.pi, 1000*np.pi+2*np.pi, TIME_STEP, dtype=np.float32)
+test_x = np.sin(train_steps)[np.newaxis,:,np.newaxis]
+test_y = np.cos(train_steps)[np.newaxis,:,np.newaxis]
 
 # model
 graph = tf.Graph()
@@ -79,8 +79,13 @@ with tf.Session(graph=graph) as sess:
     #     plt.plot(steps, pred.flatten(), 'b-')
     #     plt.ylim((-1.2, 1.2))
     #     plt.draw()
-    #     plt.pause(0.05)
+    #     plt.pause(0.1)
     # plt.show()
+
+    # Test
+    print('Testing...')
+    lossTV = sess.run(loss, feed_dict={input_x:test_x, input_y:test_y, init_s:final_s})
+    print('Testing loss: %f' % lossTV)
 
 
 
