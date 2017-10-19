@@ -17,6 +17,14 @@ def get_batch(step, time_step):
     batch_y = np.cos(steps)[np.newaxis,:,np.newaxis]
     return batch_x, batch_y
 
+def get_batch_single(data, time_step):
+    batch_x, batch_y = [], []
+    for i in range(data.shape[0]-time_step-1):
+        batch_x.append(data[i:(i+time_step)])
+        batch_y.append(data[(i+1):(i+time_step+1)])
+    return np.array(batch_x), np.array(batch_y)
+
+
 # hyper parameters
 BATCH_SIZE = 1
 TIME_STEP = 10
@@ -26,15 +34,25 @@ CELL_NUM = 32
 LR = 0.01
 
 # data
-train_steps = np.linspace(1000*np.pi, 1000*np.pi+2*np.pi, TIME_STEP, dtype=np.float32)
-test_x = np.sin(train_steps)[np.newaxis,:,np.newaxis]
-test_y = np.cos(train_steps)[np.newaxis,:,np.newaxis]
+train_steps = np.linspace(0, 1000*np.pi, 1000*TIME_STEP, dtype=np.float32)
+train_x = np.sin(train_steps)
+print(train_x.shape)
+train_x, train_y = get_batch_single(train_x, TIME_STEP)
+train_x = train_x[:,:,np.newaxis]
+train_y = train_y[:,:,np.newaxis]
+print(train_x.shape)
+print(train_y.shape)
+# test_steps = np.linspace(1000*np.pi, 1000*np.pi+2*np.pi, TIME_STEP, dtype=np.float32)
+# test_x = np.sin(test_steps)[np.newaxis,:,np.newaxis]
+# test_y = np.cos(test_steps)[np.newaxis,:]
+# print(test_x.shape)
+# print(test_y.shape)
 
 # model
 graph = tf.Graph()
 with graph.as_default():
     input_x = tf.placeholder(tf.float32, [None, TIME_STEP, INPUT_SIZE])
-    input_y = tf.placeholder(tf.float32, [None, TIME_STEP, INPUT_SIZE])
+    input_y = tf.placeholder(tf.float32, [None, TIME_STEP, OUTPUT_SIZE])
 
     # input layer
     x_in = tf.reshape(input_x, [-1, INPUT_SIZE])
@@ -42,9 +60,9 @@ with graph.as_default():
     x_in = tf.reshape(x_in, [-1, TIME_STEP, CELL_NUM])
 
     # RNN
-    rnn_cell = tf.contrib.rnn.BasicLSTMCell(num_units=32, forget_bias=1.0)
+    rnn_cell = tf.contrib.rnn.BasicLSTMCell(num_units=CELL_NUM, forget_bias=1.0)
     init_s = rnn_cell.zero_state(batch_size=BATCH_SIZE, dtype=tf.float32) # the first state
-    rnn_outputs, final_state = tf.nn.dynamic_rnn(rnn_cell, input_x, initial_state=init_s, time_major=False)
+    rnn_outputs, final_state = tf.nn.dynamic_rnn(rnn_cell, x_in, initial_state=init_s, time_major=False)
 
 
     # output layer
@@ -61,8 +79,12 @@ with graph.as_default():
 with tf.Session(graph=graph) as sess:
     sess.run(init_op)
     print('Training...')
+    train_pred = np.arange(1000).reshape((1000,1))
     for step in range(1000):
-        batch_x, batch_y = get_batch(step, TIME_STEP)
+        batch_x, batch_y = train_x[step,:,:], train_y[step,:,:]
+        batch_x, batch_y = batch_x[np.newaxis,:,:], batch_y[np.newaxis,:,:]
+        # print('Batch_x: ', batch_x)
+        # print('Batch_y: ', batch_y)
         if 'final_s' not in globals():   # the first state
             feed_dict={input_x: batch_x, input_y: batch_y}
         else:   # has hidden state
@@ -70,22 +92,26 @@ with tf.Session(graph=graph) as sess:
 
         _, pred, lossV, final_s = sess.run([train_op, y_out, loss, final_state], feed_dict=feed_dict)
 
+        train_pred[step,:] = pred[:,-1,:]
         if step % 50 == 0:
             print('Training step %d/%d.' % (step, 1000))
             print('Loss: %f' % lossV)
 
         # plotting
-    #     plt.plot(steps, batch_y.flatten(), 'r-')
-    #     plt.plot(steps, pred.flatten(), 'b-')
-    #     plt.ylim((-1.2, 1.2))
-    #     plt.draw()
-    #     plt.pause(0.1)
-    # plt.show()
+    plt.plot(train_y[0:1000,-1,:], 'r-')
+    plt.plot(train_pred, 'b-')
+    plt.ylim((-1.2, 1.2))
+    # plt.draw()
+    # plt.pause(0.1)
+    plt.show()
 
     # Test
-    print('Testing...')
-    lossTV = sess.run(loss, feed_dict={input_x:test_x, input_y:test_y, init_s:final_s})
-    print('Testing loss: %f' % lossTV)
+    # print('Testing...')
+    # lossTV, predT = sess.run([loss, y_out], feed_dict={input_x:test_x, input_y:test_y, init_s:final_s})
+    # print('Testing loss: %f' % lossTV)
+    # plt.plot(test_y[0])
+    # plt.plot(predT[0])
+    # plt.show()
 
 
 
