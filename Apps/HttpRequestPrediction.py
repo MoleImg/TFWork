@@ -96,7 +96,7 @@ with tf.Session(graph=graph) as sess:
             if 'final_s' not in globals():                 # first state, no any hidden state
                 feed_dict = {input_x: batch_x, input_y: batch_y, batch_size_ph: BATCH_SIZE}
             else:                                           # has hidden state, so pass it to rnn
-                feed_dict = {input_x: batch_x, input_y: batch_y, batch_size_ph: BATCH_SIZE, init_s: final_s}
+                feed_dict = {input_x: batch_x, input_y: batch_y, batch_size_ph: BATCH_SIZE}
 
             _, lossV, pred, final_s = sess.run([train_op, loss, y_out, final_state], feed_dict=feed_dict)
             batch_num += 1
