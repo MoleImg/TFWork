@@ -38,48 +38,41 @@ BATCH_SIZE = 5
 INPUT_SIZE = 1
 OUTPUT_SIZE = 1
 CELL_NUM = 64
+CELL_LAYER_NUM = 4
 
 LR = 0.01
-TRAIN_EPOCH = 1500
+TRAIN_EPOCH = 1000
 
 # -------------Train & Test data---------#
-data_x, data_y = create_dataset(raw_data_norm, TIME_STEP)
-print('Shape of raw data:', raw_data_norm.shape)
-print('Shape of data x:', data_x.shape)
-print('Shaoe of data y:', data_y.shape)
-# train_data = raw_data_norm[:int(0.8*raw_data_norm.shape[0]),:]
-# train_x, train_y = create_dataset(train_data, TIME_STEP)
-train_x, train_y = data_x[:int(0.8*raw_data_norm.shape[0]),:,:], data_y[:int(0.8*raw_data_norm.shape[0]),:,:]
+train_data = raw_data_norm[:int(0.8*raw_data_norm.shape[0]),:]
+train_x, train_y = create_dataset(train_data, TIME_STEP)
 print('Shape of training input:', train_x.shape)
 print('Shape of training label:', train_y.shape)
 # print(train_x)
-# test_data = raw_data_norm[int(0.8*raw_data_norm.shape[0]):,:]
-# test_x, test_y = create_dataset(test_data, TIME_STEP)
-test_x, test_y = data_x[int(0.8*raw_data_norm.shape[0]):,:,:], data_y[int(0.8*raw_data_norm.shape[0]):,:,:]
+test_data = raw_data_norm[int(0.8*raw_data_norm.shape[0]):,:]
+test_x, test_y = create_dataset(test_data, TIME_STEP)
 print('Shape of testing input:', test_x.shape)
 print('Shape of testing label:', test_y.shape)
-
-print('T1:',train_x[-1,:,0])
-print('T2:',train_y[-1,:,0])
-print('T3:',test_x[0,:,0])
-print('T4:',test_y[0,:,0])
 
 # -------------Model graph---------------#
 graph = tf.Graph()
 with graph.as_default():
-    # with tf.variable_scope('Inputs'):
     input_x = tf.placeholder(tf.float32, [None, TIME_STEP, INPUT_SIZE])
     input_y = tf.placeholder(tf.float32, [None, TIME_STEP, OUTPUT_SIZE])
     batch_size_ph = tf.placeholder(tf.int32, [])
 
-    # with tf.variable_scope('Network'):
 
     # ------input FC layer-------- #
 
     # ------RNN LSTM cells---------#
-    rnn_cell = tf.nn.rnn_cell.BasicLSTMCell(num_units=CELL_NUM)
-    init_s = rnn_cell.zero_state(batch_size=batch_size_ph, dtype=tf.float32)
-    rnn_outputs, final_state = tf.nn.dynamic_rnn(rnn_cell, input_x, initial_state=init_s)
+    rnn_cell_list = []
+    for i in range(CELL_LAYER_NUM):
+        rnn_cell = tf.nn.rnn_cell.BasicLSTMCell(num_units=CELL_NUM, state_is_tuple=True)
+        rnn_cell_list.append(rnn_cell)
+    multi_net_cell = tf.nn.rnn_cell.MultiRNNCell(cells=rnn_cell_list, state_is_tuple=True)
+    init_s = multi_net_cell.zero_state(batch_size=batch_size_ph, dtype=tf.float32)
+    rnn_outputs, final_state = tf.nn.dynamic_rnn(multi_net_cell, input_x, initial_state=init_s)
+
 
     # ------output FC layer--------#
     rnn_outputs_2D = tf.reshape(rnn_outputs, [-1, CELL_NUM])
@@ -91,14 +84,10 @@ with graph.as_default():
     loss = tf.losses.mean_squared_error(labels=input_y, predictions=y_out)
     train_op = tf.train.AdamOptimizer(LR).minimize(loss)
     init_op = tf.global_variables_initializer()
-    # tf.summary.scalar('Mean squared error', loss) # add loss to scalar summary
-
 
 # --------------Run session--------------#
 with tf.Session(graph=graph) as sess:
     sess.run(init_op)
-    # writer = tf.summary.FileWriter('./log', sess.graph) # write to file
-    # merge_op = tf.summary.merge_all()   # operation to merge all summary
     print('Training...')
     for epoch in range(TRAIN_EPOCH):
         start = 0
@@ -121,16 +110,16 @@ with tf.Session(graph=graph) as sess:
             batch_num += 1
         if epoch % 50 == 0:
             print('Training epoch %d/%d: loss is %f' % (epoch, TRAIN_EPOCH, lossV))
-        # writer.add_summary(result, epoch)
 
-        plt.plot(pred[:,-1,:], 'b-')
-        plt.plot(batch_y[:,-1,:], 'r-')
-        plt.draw()
-        plt.pause(0.01)
-    plt.show()
+    #     plt.plot(pred[:,-1,:], 'b-')
+    #     plt.plot(batch_y[:,-1,:], 'r-')
+    #     plt.draw()
+    #     plt.pause(0.01)
+    # plt.show()
 
     print('Testing...')
     test_pred = np.arange(test_x.shape[0]).reshape((test_x.shape[0],1))
+    loss_pred = np.arange(test_x.shape[0]).reshape((test_x.shape[0],1))
     for i in range(test_x.shape[0]):
         input_test = test_x[i,:,:][np.newaxis,:,:]
         output_test = test_y[i,:,:][np.newaxis,:,:]
@@ -138,10 +127,13 @@ with tf.Session(graph=graph) as sess:
             input_x: input_test, input_y: output_test, batch_size_ph: 1})
         print('Testing time %d, loss is %f' % (i+1, lossTV))
         test_pred[i,:] = predT[:,-1,:]
+        loss_pred[i,:] = lossTV
 
-
+    summ = np.sum(loss_pred,axis=0)
+    print('Testing total error: %f' % summ[0])
     plt.plot(test_pred, 'b-')
     plt.plot(test_y[:,-1,:], 'r-')
+    plt.plot(loss_pred,'g-')
     plt.show()
 # http://localhost:6006
 # tensorboard --logdir path/to/log
