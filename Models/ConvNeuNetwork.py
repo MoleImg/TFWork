@@ -16,10 +16,10 @@ Tensorflow configuration
 Function definition
 '''
 def calcCrossEntropy1D(DataA, DataB):
-    return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(DataA, DataB))
+    return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=DataA, labels=DataB))
 
 def calcMeanSqureError1D(DataA, DataB):
-    return tf.reduce_mean(reduce_sum(tf.square(DataA - DataB), reduction_indices=[1]))
+    return tf.reduce_mean(tf.reduce_sum(tf.square(DataA - DataB), reduction_indices=[1]))
 
 def weightsVarDef(shape):
     '''
@@ -167,16 +167,16 @@ keepProbTrain = 1
 keepProbCompare = 1
 with tf.name_scope('Loss'):
     lossTensor = calcCrossEntropy1D(outputFinal, yInputHandle)
-    tf.scalar_summary('Loss', lossTensor)
+    tf.summary.scalar('Loss', lossTensor)
     accuracy = calcAccuracy(outputFinal, yInputHandle)
-    tf.scalar_summary('Accuracy', accuracy)
+    tf.summary.scalar('Accuracy', accuracy)
 with tf.name_scope('Training'):
     trainStep = tf.train.AdamOptimizer().minimize(lossTensor)
 
 # Initialization
 init = tf.initialize_all_variables()
 # Merging
-merge = tf.merge_all_summaries()
+merge = tf.summary.merge_all()
 '''
 Session running
 '''

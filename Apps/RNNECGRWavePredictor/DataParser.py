@@ -1,6 +1,6 @@
 '''
 Todo:
-ECG data import and reallign
+ECG data import and realign
 '''
 import numpy as np
 
